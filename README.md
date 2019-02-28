@@ -1,4 +1,4 @@
-# OCP Application Monitoring
+# Monitor Red Hat Middleware deployed to OpenShift with Prometheus
 
 ![Monitoring Component Diagram](diagram.png?raw=true "Monitoring Component Diagram")
 
