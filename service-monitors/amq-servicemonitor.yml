@@ -1,0 +1,48 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: amq-prometheus-service-monitor
+  labels:
+    app: amq-prometheus-service-monitor
+  annotations:
+    openshift.io/display-name: "Red Hat AMQ service-monitor install"
+    openshift.io/provider-display-name: "Red Hat, Inc."
+    description: "A ServiceMonitor specifies how groups of services should be monitored - this template defines how to monitor a AMQ application for Prometheus."
+    tags: "amq,prometheus,prometheus-operator,monitoring"
+    iconClass: "icon-rh-integration"
+    version: "1.0"
+parameters:
+- name: AMQ_SERVICE_NAME
+  displayName: AMQ Service Name
+  value: 'example-amq'
+  required: true
+  description: The service name of the AMQ application to monitor.
+- name: AMQ_SERVICE_NAMESPACE
+  displayName: AMQ Service Namespace
+  value: 'fuse'
+  required: true
+  description: Namespace where AMQ is deployed
+- name: AMQ_SERVICE_TEAM
+  displayName: AMQ Service Team
+  value: 'fuse'
+  required: true
+- name: ENDPOINT_PORT
+  displayName: Endpoint port
+  value: 'prometheus'
+  required: true
+objects:
+- apiVersion: monitoring.coreos.com/v1
+  kind: ServiceMonitor
+  metadata:
+    name: ${AMQ_SERVICE_NAME}
+    labels:
+      team: ${AMQ_SERVICE_TEAM}
+  spec:
+    namespaceSelector:
+      matchNames:
+      - ${AMQ_SERVICE_NAMESPACE}
+    selector:
+      matchLabels:
+        application: ${AMQ_SERVICE_NAME}
+    endpoints:
+    - port: prometheus

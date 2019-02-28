@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: prometheus
+    role: alert-rules
+  name: high-test-queue-size
+spec:
+  groups:
+  - name: pod.rules
+    rules:
+    - alert: QueueSizeTooHigh
+      annotations:
+        message: Test queue size over threshold
+      expr: activemq_queue_size{service="jboss-amq-tcp", namespace="dev", queue="test-queue"} > 10
+      for: 10m
+      labels:
+        severity: critical

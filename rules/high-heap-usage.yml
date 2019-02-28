@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: prometheus
+    role: alert-rules
+  name: high-heap-usage
+spec:
+  groups:
+  - name: pod.rules
+    rules:
+    - alert: HighHeapUsage
+      annotations:
+        message: "JVM heap of instance `{{$labels.instance}}` is above 70% for 3 minutes. (current=`{{$value}}%`)"
+      expr: |
+        sum(avg_over_time(jvm_memory_used_bytes{area="heap"}[1m]))by(instance)*100/sum(avg_over_time(jvm_memory_max_bytes{area="heap"}[1m]))by(instance) >= 70
+      for: 3m
+      labels:
+        severity: warning

@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: prometheus
+    role: alert-rules
+  name: processor-slow
+spec:
+  groups:
+  - name: pod.rules
+    rules:
+    - alert: SlowProcessor
+      annotations:
+        message: Test process slower than usual
+      expr: org_apache_camel_MeanProcessingTime{processor="\"test-processor\"", service="test-service"} > 3000
+      for: 10m
+      labels:
+        severity: critical

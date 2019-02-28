@@ -1,0 +1,23 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: amq-prometheus-service-monitor
+parameters:
+- name: PROMETHEUS_NAMESPACE
+  displayName: 'Prometheus Namespace'
+  value: 'application-monitoring'
+  required: true
+  description: Project where Prometheus is deployed
+objects:
+- apiVersion: authorization.openshift.io/v1
+  groupNames:
+  - system:serviceaccounts:${PROMETHEUS_NAMESPACE}
+  kind: RoleBinding
+  metadata:
+    name: view
+  roleRef:
+    name: view
+  subjects:
+  - kind: SystemGroup
+    name: system:serviceaccounts:${PROMETHEUS_NAMESPACE}
+  userNames: null
